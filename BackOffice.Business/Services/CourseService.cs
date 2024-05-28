@@ -39,7 +39,7 @@ public class CourseService(HttpClient httpClient)
             };
 
 
-            var response = await _httpClient.PostAsJsonAsync("https://courseprovider-nikesjo.azurewebsites.net/api/graphql", query);
+            var response = await _httpClient.PostAsJsonAsync(Environment.GetEnvironmentVariable("COURSEPROVIDER_URI"), query);
             response.EnsureSuccessStatusCode();
 
             if (response.IsSuccessStatusCode)
@@ -91,7 +91,7 @@ public class CourseService(HttpClient httpClient)
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("http://localhost:7117/api/graphql", mutation);
+            var response = await _httpClient.PostAsJsonAsync(Environment.GetEnvironmentVariable("COURSEPROVIDER_URI"), mutation);
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadFromJsonAsync<GraphQLResponse<Course>>();
