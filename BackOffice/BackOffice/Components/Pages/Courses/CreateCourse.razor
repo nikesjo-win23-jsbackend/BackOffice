@@ -1,0 +1,253 @@
+﻿@page "/courses/create"
+
+@attribute [StreamRendering]
+
+@rendermode InteractiveServer
+
+<PageTitle>Create course</PageTitle>
+
+<section id="createcourse">
+    <div class="container">
+        @if (!string.IsNullOrEmpty(SuccessMessage))
+        {
+            <div id="form-success" class="alert alert-success" role="alert">
+                @SuccessMessage
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div id="form-error" class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+
+        <EditForm FormName="courseform" Model="CourseForm" OnValidSubmit="OnValidSubmit" method="post" novalidate>
+            <DataAnnotationsValidator />
+            <!-- <ValidationSummary /> -->
+
+            <div class="mb-3">
+                <label for="imageUri" class="form-label">Image URI</label>
+                <InputText id="imageUri" @bind-Value="CourseForm.ImageUri" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="imageHeaderUri" class="form-label">Image Header URI</label>
+                <InputText id="imageHeaderUri" @bind-Value="CourseForm.ImageHeaderUri" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="isBestseller" class="form-label">Is Bestseller</label>
+                <InputCheckbox id="isBestseller" @bind-Value="CourseForm.IsBestseller" class="form-check-input" />
+            </div>
+            <div class="mb-3">
+                <label for="isDigital" class="form-label">Is Digital</label>
+                <InputCheckbox id="isDigital" @bind-Value="CourseForm.IsDigital" class="form-check-input" />
+            </div>
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <InputText id="title" @bind-Value="CourseForm.Title" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="ingress" class="form-label">Ingress</label>
+                <InputText id="ingress" @bind-Value="CourseForm.Ingress" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="starRating" class="form-label">Star Rating</label>
+                <InputNumber id="starRating" @bind-Value="CourseForm.StarRating" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="reviews" class="form-label">Reviews</label>
+                <InputText id="reviews" @bind-Value="CourseForm.Reviews" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="likesInProcent" class="form-label">Likes In Procent</label>
+                <InputText id="likesInProcent" @bind-Value="CourseForm.LikesInProcent" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="likes" class="form-label">Likes</label>
+                <InputText id="likes" @bind-Value="CourseForm.Likes" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="categories" class="form-label">Categories</label>
+                <InputText id="categories" class="form-control" @bind-Value="categoriesString" placeholder="Enter categories separated by commas with no space between" />
+            </div>
+            <div class="mb-3">
+                <label for="hours" class="form-label">Course Hours</label>
+                <InputText id="hours" class="form-control" @bind-Value="CourseForm.Hours" placeholder="Enter course hours" />
+            </div>
+
+            <div class="mb-3">
+                <label for="authorName" class="form-label">Author Name</label>
+                <InputText id="authorName" class="form-control" @bind-Value="authorName" placeholder="Enter author name" />
+            </div>
+
+            <div class="mb-3">
+                <label for="currency" class="form-label">Course Currency</label>
+                <InputText id="currency" class="form-control" @bind-Value="CourseForm.Prices!.Currency" placeholder="Write the currency in symbols, such as $ or £" />
+            </div>
+
+            <div class="mb-3">
+                <label for="price" class="form-label">Course Price</label>
+                <InputNumber id="price" class="form-control" @bind-Value="CourseForm.Prices!.Price" placeholder="Enter course price" />
+            </div>
+
+            <div class="mb-3">
+                <label for="discountPrice" class="form-label">Course discount price</label>
+                <InputNumber id="discountPrice" class="form-control" @bind-Value="CourseForm.Prices!.Discount" placeholder="Enter course discounted price" />
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Course Description</label>
+                <InputText id="description" class="form-control" @bind-Value="CourseForm.Content!.Description" placeholder="Enter course description" />
+            </div>
+
+            <div class="mb-3">
+                <label for="includes" class="form-label">Course Includes</label>
+                <InputText id="includes" class="form-control" @bind-Value="includesString" placeholder="Enter includes separated by commas with no space between" />
+            </div>
+
+            <div class="mb-3">
+                <label for="learn" class="form-label">Course Learns</label>
+                <InputText id="learn" class="form-control" @bind-Value="learnString" placeholder="Enter learns separated by commas with no space between" />
+            </div>
+
+            <div class="mb-3">
+                <label for="programDetailTitle" class="form-label">Program Detail Title</label>
+                <InputText id="programDetailTitle" class="form-control" @bind-Value="programDetailTitle" placeholder="Enter program detail title" />
+            </div>
+
+            <div class="mb-3">
+                <label for="programDetailDescription" class="form-label">Program Detail Description</label>
+                <InputText id="programDetailDescription" class="form-control" @bind-Value="programDetailDescription" placeholder="Enter program detail description" />
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </EditForm>
+
+    </div>
+</section>
+
+@code {
+    private string? ErrorMessage { get; set; }
+
+    private string? SuccessMessage { get; set; }
+
+    public Course CourseForm = new Course
+    {
+        Prices = new Prices(),
+        Content = new Content()
+    };
+
+    private string? authorName;
+    private string? includesString;
+    private string? learnString;
+    private string? categoriesString;
+    private string[] categories = Array.Empty<string>();
+    private string[] includes = Array.Empty<string>();
+    private string[] learn = Array.Empty<string>();
+    private string? programDetailTitle;
+    private string? programDetailDescription;
+    private int programDetailCounter = 1;
+
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(authorName))
+            {
+                if (CourseForm.Authors == null)
+                {
+                    CourseForm.Authors = new List<Author>();
+                }
+                CourseForm.Authors.Add(new Author { Name = authorName });
+            }
+
+            if (!string.IsNullOrWhiteSpace(categoriesString))
+            {
+                CourseForm.Categories = categoriesString.Split(',').Select(x => x.Trim()).ToArray();
+            }
+
+            if (!string.IsNullOrWhiteSpace(includesString))
+            {
+                CourseForm.Content!.Includes = includesString.Split(',').Select(x => x.Trim()).ToArray();
+            }
+
+            if (!string.IsNullOrWhiteSpace(learnString))
+            {
+                CourseForm.Content!.Learn = learnString.Split(',').Select(x => x.Trim()).ToArray();
+            }
+
+            if (!string.IsNullOrWhiteSpace(programDetailTitle) && !string.IsNullOrWhiteSpace(programDetailDescription))
+            {
+                if (CourseForm.Content?.ProgramDetails == null)
+                {
+                    CourseForm.Content!.ProgramDetails = new List<ProgramDetailItem>();
+                }
+                CourseForm.Content.ProgramDetails.Add(new ProgramDetailItem
+                {
+                    Id = programDetailCounter++,
+                    Title = programDetailTitle,
+                    Description = programDetailDescription
+                });
+            }
+
+            var mutation = new
+            {
+                query = @"
+                mutation CreateCourse($input: CourseCreateRequestInput!) {
+                    createCourse(input: $input) {
+                        id
+                        title
+                        imageUri
+                        imageHeaderUri
+                        isBestseller
+                        isDigital
+                        categories
+                        ingress
+                        starRating
+                        reviews
+                        likesInProcent
+                        likes
+                        hours
+                        authors {
+                            name
+                        }
+                        prices {
+                            currency
+                            price
+                            discount
+                        }
+                        content {
+                            description
+                            includes
+                            learn
+                            programDetails {
+                                id
+                                title
+                                description
+                            }
+                        }
+                    }
+                }",
+                variables = new { input = CourseForm }
+            };
+
+            var response = await CourseService.CreateCourseAsync(mutation);
+            if (response != null)
+            {
+                SuccessMessage = "Course created successfully.";
+            }
+            else
+            {
+                ErrorMessage = "An error occurred while creating the course.";
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            ErrorMessage = $"HTTP Request Error: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"An unexpected error occurred: {ex.Message}";
+        }
+    }
+}
