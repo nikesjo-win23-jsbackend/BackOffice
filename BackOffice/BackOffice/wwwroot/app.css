@@ -92,3 +92,72 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
   border-color: #929292;
 }
+
+.btn-theme {
+  border-radius: 6px;
+  text-align: center;
+  font-size: 16px;
+  padding: 8px 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--color-theme);
+  color: var(--color-white);
+  border: none;
+}
+.btn-theme:hover {
+  text-decoration: none;
+  background-color: var(--color-gray-700);
+  color: var(--color-gray-000);
+  box-shadow: 0px 8px 18px -8px rgba(99, 102, 241, 0.9);
+}
+
+.btn-red {
+  border-radius: 6px;
+  text-align: center;
+  font-size: 16px;
+  padding: 8px 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--color-danger);
+  color: var(--color-white);
+  border: none;
+}
+.btn-red:hover {
+  text-decoration: none;
+  background-color: var(--color-gray-700);
+  box-shadow: 0px 2px 6.4px -1px rgba(19, 16, 34, 0.03), 0px 4.4px 12px -1px rgba(19, 16, 34, 0.06);
+}
+
+.newsletter-info {
+  display: flex;
+  flex-direction: column;
+  row-gap: 50px;
+}
+.newsletter-info label {
+  color: var(--color-gray-900);
+  font-weight: 600;
+}
+.newsletter-info .form-control {
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+.newsletter-info .delete-checkbox .form-check-input {
+  border: 2px solid var(--color-gray-500);
+  height: 18px;
+  width: 18px;
+  margin-bottom: 10px;
+}
+.newsletter-info .delete-checkbox .form-check-input:checked {
+  background-color: var(--color-theme);
+  border-color: var(--color-theme);
+}
+.newsletter-info .newsletter-form {
+  margin-top: 50px;
+}
+.newsletter-info .newsletter-form .col-auto {
+  margin-top: 10px;
+}

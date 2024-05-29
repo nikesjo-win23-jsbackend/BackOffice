@@ -14,6 +14,15 @@
 @using System.Diagnostics
 @using BackOffice.Business.Models
 @using BackOffice.Business.Services
+@using BackOffice.Data
+@using System.Text
+@using Newtonsoft.Json
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IUserStore<ApplicationUser> UserStore
 @inject HttpClient Http
 @inject CourseService CourseService

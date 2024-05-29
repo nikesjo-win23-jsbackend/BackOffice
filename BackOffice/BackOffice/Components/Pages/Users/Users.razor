@@ -43,14 +43,14 @@ else
 }
 
 @code {
-    private ApplicationUser[]? users;
+    private User[]? users;
 
     protected override async Task OnInitializedAsync()
     {
-        users = await Http.GetFromJsonAsync<ApplicationUser[]>("http://localhost:7256/api/GetUsers");
+        users = await Http.GetFromJsonAsync<User[]>("http://localhost:7256/api/GetUsers");
     }
 
-    public class ApplicationUser
+    public class User
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

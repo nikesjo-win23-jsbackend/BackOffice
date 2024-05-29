@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackOffice", "BackOffice\Ba
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackOffice.Client", "BackOffice\BackOffice.Client\BackOffice.Client.csproj", "{CAFD6BE8-10D9-433F-BB36-84E697B422E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackOffice.Business", "BackOffice.Business\BackOffice.Business.csproj", "{E10D23DE-A136-45BD-98CE-F0FC3A851EBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackOffice.Business", "BackOffice.Business\BackOffice.Business.csproj", "{E10D23DE-A136-45BD-98CE-F0FC3A851EBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

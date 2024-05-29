@@ -1,0 +1,97 @@
+﻿@page "/create-admin"
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<PageTitle>Create Admin</PageTitle>
+
+<h3>Create Admin</h3>
+
+<EditForm Model="@newAdmin" OnValidSubmit="HandleValidSubmit">
+    <InputText @bind-Value="newAdmin.FirstName" placeholder="First name" />
+    <InputText @bind-Value="newAdmin.LastName" placeholder="Last name" />
+    <InputText @bind-Value="newAdmin.Email" placeholder="Email" />
+    <InputText @bind-Value="newAdmin.Password" type="password" placeholder="Password" />
+    <ValidationMessage For="@(() => newAdmin.FirstName)" />
+    <ValidationMessage For="@(() => newAdmin.LastName)" />
+    <ValidationMessage For="@(() => newAdmin.Email)" />
+    <ValidationMessage For="@(() => newAdmin.Password)" />
+    <button type="submit">Create Admin</button>
+</EditForm>
+
+@if (resultMessage != null)
+{
+    <p>@resultMessage</p>
+}
+
+@code {
+    private AdminUserModel newAdmin = new AdminUserModel();
+
+    private string? resultMessage;
+
+    [Inject]
+    private UserManager<ApplicationUser> UserManager { get; set; } = default!;
+
+    [Inject]
+    private RoleManager<IdentityRole> RoleManager { get; set; } = default!;
+
+    private async Task HandleValidSubmit()
+    {
+        resultMessage = await CreateAdminUserAsync(newAdmin.Email, newAdmin.Password, newAdmin.FirstName, newAdmin.LastName);
+    }
+
+    private async Task<string> CreateAdminUserAsync(string email, string password, string firstname, string lastname)
+    {
+        try
+        {
+            var user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true,
+                FirstName = firstname,
+                LastName = lastname
+            };
+
+            var result = await UserManager.CreateAsync(user, password);
+
+            if (result.Succeeded)
+            {
+                if (!await RoleManager.RoleExistsAsync("Admin"))
+                {
+                    await RoleManager.CreateAsync(new IdentityRole("Admin"));
+                }
+
+                await UserManager.AddToRoleAsync(user, "Admin");
+                return "Admin user created successfully.";
+            }
+            else
+            {
+                return $"Error creating admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}";
+            }
+        }
+        catch (Exception ex)
+        {
+            return $"Error creating admin user: {ex.Message}";
+        }
+    }
+
+    private class AdminUserModel
+    {
+        [Required]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required]
+        public string LastName { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = string.Empty;
+    }
+}
+

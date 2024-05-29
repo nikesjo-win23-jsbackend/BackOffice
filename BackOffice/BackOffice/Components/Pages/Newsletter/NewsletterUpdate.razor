@@ -1,0 +1,177 @@
+﻿@page "/newsletter/{subscriberId}"
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<PageTitle>Update Newsletter</PageTitle>
+
+<h3>Update Newsletter</h3>
+
+@if (subscriber == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="newsletter-info">
+        @if (!string.IsNullOrEmpty(SuccessMessage))
+        {
+            <div id="form-success" class="alert alert-success" role="alert">
+                @SuccessMessage
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div id="form-error" class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+        <EditForm method="post" Model="formModel" FormName="newsletterForm" OnValidSubmit="OnValidSubmitAsync" class="newsletter-form" novalidate>
+            <DataAnnotationsValidator />
+            <div class="col g-4">
+                <div class="col-xl-6">
+                    <label class="form-label">Email</label>
+                    <input type="text" @bind="formModel.Email" class="form-control" />
+                </div>
+                <div class="col-auto">
+                    <button class="btn-theme" type="submit">Save changes</button>
+                </div>
+            </div>
+        </EditForm>
+
+        <EditForm method="post" Model="deleteSubscriber" FormName="deleteSubscriber" OnValidSubmit="HandleSubmitAsync" class="delete-subscriber" novalidate>
+            <DataAnnotationsValidator />
+            <div class="col g-4">
+                <div class="delete-checkbox">
+                    <InputCheckbox @bind-Value="deleteSubscriber.ConfirmDelete" class="form-check-input" aria-required="true" />
+                    <label class="form-label">Delete subscriber from database</label>
+                </div>
+                <div class="col-auto">
+                    <button class="btn-red" type="submit">Delete subscriber</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private Subscriber? subscriber = new Subscriber();
+
+    [Parameter]
+    public string? subscriberId { get; set; }
+
+    private string? ErrorMessage { get; set; }
+
+    private string? SuccessMessage { get; set; }
+
+    [SupplyParameterFromForm]
+    private Subscriber formModel { get; set; } = new();
+
+    [SupplyParameterFromForm]
+    private DeleteSubscriber deleteSubscriber { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(subscriberId))
+        {
+            try
+            {
+                subscriber = await Http.GetFromJsonAsync<Subscriber>($"http://localhost:7070/api/GetSubscriberById/{subscriberId}");
+                if (subscriber != null)
+                {
+                    formModel = subscriber;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error fetching subscriber data: {ex.Message}";
+            }
+        }
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        string url = $"http://localhost:7070/api/UpdateSubscriber/{subscriberId}";
+        var updateRequest = new { Email = formModel.Email };
+        try
+        {
+            var result = await Http.PostAsJsonAsync(url, updateRequest);
+            var responseContent = await result.Content.ReadAsStringAsync();
+
+            try
+            {
+                var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(responseContent);
+
+                if (apiResponse != null)
+                {
+                    if (result.IsSuccessStatusCode)
+                    {
+                        SuccessMessage = apiResponse.Message;
+                    }
+                    else
+                    {
+                        ErrorMessage = apiResponse.Message;
+                    }
+                }
+                else
+                {
+                    ErrorMessage = "Invalid response format.";
+                }
+            }
+            catch (JsonException jsonEx)
+            {
+                ErrorMessage = $"Error parsing JSON response: {jsonEx.Message}";
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error updating subscriber information: {ex.Message}";
+        }
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        string url = $"http://localhost:7070/api/Unsubscribe";
+        var deleteRequest = new { Email = formModel.Email };
+        try
+        {
+            var result = await Http.PostAsJsonAsync(url, deleteRequest);
+            var responseContent = await result.Content.ReadAsStringAsync();
+
+            try
+            {
+                var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(responseContent);
+
+                if (apiResponse != null)
+                {
+                    if (result.IsSuccessStatusCode)
+                    {
+                        SuccessMessage = apiResponse.Message;
+                    }
+                    else
+                    {
+                        ErrorMessage = apiResponse.Message;
+                    }
+                }
+                else
+                {
+                    ErrorMessage = "Invalid response format.";
+                }
+            }
+            catch (JsonException jsonEx)
+            {
+                ErrorMessage = $"Error parsing JSON response: {jsonEx.Message}";
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error updating subscriber information: {ex.Message}";
+        }
+    }
+
+    public class DeleteSubscriber
+    {
+        public bool ConfirmDelete { get; set; } = false;
+    }
+}

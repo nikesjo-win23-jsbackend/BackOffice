@@ -1,0 +1,30 @@
+﻿@page "/newsletter"
+
+@attribute [StreamRendering]
+
+<PageTitle>Newsletter</PageTitle>
+
+<h3>Newsletter</h3>
+
+@if (subscribers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var subscriber in subscribers)
+    {
+        <a href="/newsletter/@subscriber.Id">
+            <div class="mb-3">@subscriber.Email</div>
+        </a>
+    }
+}
+
+@code {
+    private Subscriber[]? subscribers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        subscribers = await Http.GetFromJsonAsync<Subscriber[]>("http://localhost:7070/api/GetSubscribers");
+    }
+}

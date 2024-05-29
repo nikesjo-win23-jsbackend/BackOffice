@@ -1,0 +1,63 @@
+﻿@page "/admins"
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+
+<PageTitle>Admins</PageTitle>
+
+<h3>Admins</h3>
+
+@* @if (admins == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var admin in admins)
+    {
+        <a href="/admins/@admin.Id">
+            <div class="mb-3">@admin.FirstName @admin.LastName</div>
+        </a>
+    }
+}
+ *@
+@code {
+    // private ApplicationUser[]? admins = default!;
+
+    // [CascadingParameter]
+    // private HttpContext HttpContext { get; set; } = default!;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     try
+    //     {
+    //         await LoadUserDataAsync();
+
+    //         if (admins != null)
+    //         {
+    //             Input.FirstName = admins.FirstName;
+    //             Input.LastName = admins.LastName;
+    //             Input.Email = admins.Email!;
+
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Debug.WriteLine($"Error fetching user information in OnInitializedAsync: {ex.Message}");
+    //     }
+    // }
+
+    // private async Task LoadUserDataAsync()
+    // {
+    //     try
+    //     {
+    //         admins = await UserManager.Users[];
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Debug.WriteLine($"Error fetching user information: {ex.Message}");
+    //     }
+
+    // }
+}
