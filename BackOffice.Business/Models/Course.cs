@@ -17,6 +17,7 @@ public class Course
     public virtual List<Author>? Authors { get; set; }
     public virtual Prices? Prices { get; set; }
     public virtual Content? Content { get; set; }
+    public virtual ProgramDetailItem? ProgramDetails { get; set; }
 }
 
 public class Author
@@ -29,7 +30,6 @@ public class Content
     public string? Description { get; set; }
     public string[]? Includes { get; set; }
     public string[]? Learn { get; set; }
-    public virtual List<ProgramDetailItem>? ProgramDetails { get; set; }
 }
 
 public class Prices
@@ -41,7 +41,10 @@ public class Prices
 
 public class ProgramDetailItem
 {
-    public int Id { get; set; }
-    public string? Title { get; set; }
-    public string? Description { get; set; }
+    public string? Title_1 { get; set; }
+    public string? Description_1 { get; set; }
+    public string? Title_2 { get; set; }
+    public string? Description_2 { get; set; }
+    public string? Title_3 { get; set; }
+    public string? Description_3 { get; set; }
 }

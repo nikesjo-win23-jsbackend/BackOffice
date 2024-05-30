@@ -25,6 +25,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        subscribers = await Http.GetFromJsonAsync<Subscriber[]>("http://localhost:7070/api/GetSubscribers");
+        subscribers = await Http.GetFromJsonAsync<Subscriber[]>("https://newsletterprovider-nikesjo.azurewebsites.net/api/GetSubscribers?code=jUq48ijpjjo88vBzuO1kcswUQtGs3eYdymCSOtO37rmnAzFuNi0ajw%3D%3D");
     }
 }

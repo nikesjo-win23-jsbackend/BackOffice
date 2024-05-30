@@ -1,5 +1,201 @@
-﻿<h3>AdminDetails</h3>
+﻿@page "/admindetails/{userId}"
+@using BackOffice.Data
+@using Microsoft.AspNetCore.Identity
+@using System.ComponentModel.DataAnnotations
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager NavigationManager
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+
+@if (!string.IsNullOrEmpty(SuccessMessage))
+{
+    <div id="form-success" class="alert alert-success" role="alert">
+        @SuccessMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div id="form-error" class="alert alert-danger" role="alert">
+        @ErrorMessage
+    </div>
+}
+
+<EditForm Model="Input" FormName="DeleteUser" OnValidSubmit="RemoveAdmin">
+    <div class="mb-3">
+        <button type="submit" class="btn btn-danger">Delete User</button>
+    </div>
+</EditForm>
+<section id="signup">
+    <div class="container">
+
+        <EditForm method="post" Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" novalidate>
+            <DataAnnotationsValidator />
+            <h3>Admin Details</h3>
+            <div class="content">
+                <div id="form-firstname" class="input-group">
+                    <label for="firstname" class="form-label">First name (Requierd)</label>
+                    <InputText type="text" @bind-Value="Input.FirstName" class="form-control" placeholder="Enter your first name." />
+                    <ValidationMessage For="() => Input.FirstName" />
+                </div>
+
+                <div id="form-lastname" class="input-group">
+                    <label for="lastname" class="form-label">Last name (Requierd)</label>
+                    <InputText type="text" @bind-Value="Input.LastName" class="form-control" placeholder="Enter your last name." />
+                    <ValidationMessage For="() => Input.LastName" />
+                </div>
+
+                <div id="form-email" class="input-group">
+                    <label for="email" class="form-label">Email (Requierd)</label>
+                    <InputText type="text" @bind-Value="Input.Email" class="form-control" placeholder="Enter your email." />
+                    <ValidationMessage For="() => Input.Email" />
+                </div>
+
+                <div id="form-password" class="input-group">
+                    <label>Password</label>
+                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="password" aria-required="true" placeholder="Enter your password" />
+                    <ValidationMessage For="() => Input.Password" />
+                </div>
+                <div id="form-confirm" class="input-group">
+                    <label>Confirm password</label>
+                    <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="confirm" aria-required="true" placeholder="Confirm your password" />
+                    <ValidationMessage For="() => Input.ConfirmPassword" />
+                </div>
+
+                <div id="form-buttons">
+                    <button class="btn-theme" type="submit">Save changes</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</section>
 
 @code {
+    private ApplicationUser? user;
 
+    private string? ErrorMessage;
+
+    private string? SuccessMessage;
+
+    private string? ReturnUrl;
+
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    [Parameter]
+    public string UserId { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserManager.FindByIdAsync(UserId);
+
+        if (user != null)
+        {
+            Input.FirstName = user.FirstName;
+            Input.LastName = user.LastName;
+            Input.Email = user.Email!;
+        }
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (user != null)
+        {
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
+            user.Email = Input.Email;
+            user.UserName = Input.Email;
+            user.PasswordHash = Input.Password;
+
+            if (!string.IsNullOrEmpty(Input.Password))
+            {
+                if (Input.Password != Input.ConfirmPassword)
+                {
+                    ErrorMessage = "Password did not match";
+                }
+
+                var token = await UserManager.GeneratePasswordResetTokenAsync(user);
+                var resetResult = await UserManager.ResetPasswordAsync(user, token, Input.Password);
+                if (!resetResult.Succeeded)
+                {
+                    ErrorMessage = "Failed to update password.";
+                }
+            }
+
+            var result = await UserManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                SuccessMessage = "Admin information updated successfully.";
+            }
+            else
+            {
+                ErrorMessage = "Failed to update admin information.";
+            }
+        }
+    }
+
+    private async Task RemoveAdmin()
+    {
+        try
+        {
+
+            user = await UserManager.FindByIdAsync(UserId);
+
+            if (user != null)
+            {
+                var response = await UserManager.DeleteAsync(user);
+                if (response.Succeeded)
+                {
+                    SuccessMessage = "User was deleted successfully";
+                    
+                    NavigationManager.NavigateTo(ReturnUrl ?? "/admins");
+                }
+                else
+                {
+                    ErrorMessage = "Failed to delete user.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error delete user information: {ex.Message}";
+        }
+    }
+
+
+    private sealed class InputModel
+    {
+
+        [DataType(DataType.Text)]
+        [Display(Name = "First name")]
+        [Required(ErrorMessage = "First name is required")]
+        [MinLength(2, ErrorMessage = "First name is required")]
+        public string FirstName { get; set; } = null!;
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Last name")]
+        [Required(ErrorMessage = "Last name is required")]
+        [MinLength(2, ErrorMessage = "Last name is required")]
+        public string LastName { get; set; } = null!;
+
+        [Display(Name = "Email address")]
+        [DataType(DataType.EmailAddress)]
+        [Required(ErrorMessage = "Email is required")]
+        [RegularExpression("^[^@\\s]+@[^@\\s]+\\.[^@\\s]{2,}$", ErrorMessage = "Your email address is invalid")]
+        public string Email { get; set; } = null!;
+
+        [Required]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[!@#$%^&*?])(?=.{8,})[a-zA-Z0-9!@#$%^&*?]+$", ErrorMessage = "The password must be at least 8 characters long and contain at least one uppercase letter and one special character.")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; } = "";
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; } = "";
+    }
 }

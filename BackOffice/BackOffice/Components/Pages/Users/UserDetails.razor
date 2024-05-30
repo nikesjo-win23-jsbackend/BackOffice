@@ -1,0 +1,186 @@
+﻿@page "/userdetails/{userId}"
+
+@using BackOffice.Data
+@using Newtonsoft.Json
+@using System.Text
+@inject NavigationManager NavigationManager
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<PageTitle>User Details</PageTitle>
+
+<h3>User Details</h3>
+
+@if (user == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="Input" FormName="DeleteUser" OnValidSubmit="RemoveUser">
+        <div class="mb-3">
+            <button type="submit" class="btn btn-danger">Delete User</button>
+        </div>
+    </EditForm>
+    <section id="account-details">
+        <div class="details">
+            @if (!string.IsNullOrEmpty(SuccessMessage))
+            {
+                <div id="form-success" class="alert alert-success" role="alert">
+                    @SuccessMessage
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <div id="form-error" class="alert alert-danger" role="alert">
+                    @ErrorMessage
+                </div>
+            }
+            <section class="basic-info">
+                <EditForm method="post" Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" novalidate>
+                    <DataAnnotationsValidator />
+
+                    <div class="content">
+                        <div id="form-firstname" class="input-group">
+                            <label for="firstname" class="form-label">First name (Requierd)</label>
+                            <input type="text" @bind="Input.FirstName" class="form-control" placeholder="Enter your first name." />
+                            <ValidationMessage For="() => Input.FirstName" />
+                        </div>
+
+                        <div id="form-lastname" class="input-group">
+                            <label for="lastname" class="form-label">Last name (Requierd)</label>
+                            <input type="text" @bind="Input.LastName" class="form-control" placeholder="Enter your last name." />
+                            <ValidationMessage For="() => Input.LastName" />
+                        </div>
+
+                        <div id="form-email" class="input-group">
+                            <label for="email" class="form-label">Email (Requierd)</label>
+                            <input type="text" @bind="Input.Email" class="form-control" placeholder="Enter your email." />
+                            <ValidationMessage For="() => Input.Email" />
+                        </div>
+
+                        <div id="form-phone" class="input-group">
+                            <label for="phone-number" class="form-label">Phone number</label>
+                            <input @bind="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                            <ValidationMessage For="() => Input.PhoneNumber" />
+                        </div>
+
+                        <div id="form-bio" class="input-group">
+                            <label for="bio" class="form-label">Biography</label>
+                            <input type="text" @bind="Input.Biography" class="form-control" placeholder="Add a short bio..." />
+                        </div>
+
+                        <div id="form-addressline-1" class="input-group">
+                            <label for="addressline_1" class="form-label">Address line 1 (Requierd)</label>
+                            <input type="text" @bind="Input.Address!.AddressLine_1" class="form-control" placeholder="Enter your address line" />
+                            <ValidationMessage For="() => Input.Address!.AddressLine_1" />
+                        </div>
+
+                        <div id="form-addressline-2" class="input-group">
+                            <label for="addressline_2" class="form-label">Address line 2</label>
+                            <input type="text" @bind="Input.Address.AddressLine_2" class="form-control" placeholder="Enter your second address line" />
+                        </div>
+
+                        <div id="form-postalcode" class="input-group">
+                            <label for="postalcode" class="form-label">Postal code (Requierd)</label>
+                            <input type="text" @bind="Input.Address.PostalCode" class="form-control" placeholder="Enter your postal code" />
+                            <ValidationMessage For="() => Input.Address!.PostalCode" />
+                        </div>
+
+                        <div id="form-city" class="input-group">
+                            <label for="city" class="form-label">City (Requierd)</label>
+                            <input type="text" @bind="Input.Address.City" class="form-control" placeholder="Enter your city" />
+                            <ValidationMessage For="() => Input.Address!.City" />
+                        </div>
+
+                        <div id="form-buttons">
+                            <button class="btn-theme" type="submit">Save changes</button>
+                        </div>
+                    </div>
+                </EditForm>
+            </section>
+        </div>
+    </section>
+}
+
+@code {
+    private UserInfoModel? user;
+
+    [Parameter]
+    public string? userId { get; set; }
+
+    private string? ErrorMessage { get; set; }
+
+    private string? SuccessMessage { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromForm]
+    private UserInfoModel Input { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(userId))
+        {
+            try
+            {
+                user = await Http.GetFromJsonAsync<UserInfoModel>($"https://userprovider-nikesjo.azurewebsites.net/api/GetUserById/{userId}?code=ewd0oxk_arkf9W6AggxA3jP7pGYC01OWNZHx53w1IXRpAzFuWObp8g%3D%3D");
+                if (user != null)
+                {
+                    Input = user;
+                    // Input.Address = user.Address ?? new AddressModel();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error fetching user data: {ex.Message}";
+            }
+        }
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        try
+        {
+            var response = await Http.PutAsync($"https://userprovider-nikesjo.azurewebsites.net/api/UpdateUser/{userId}?code=7jp0Xr-FFsgQANWc9DiEbdWSOfB1MqXo2yBnGmqZExXjAzFuJ78nkw%3D%3D", new StringContent(JsonConvert.SerializeObject(Input), Encoding.UTF8, "application/json"));
+            if (response.IsSuccessStatusCode)
+            {
+                SuccessMessage = "User information updated successfully.";
+            }
+            else
+            {
+                ErrorMessage = "Failed to update user information.";
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error updating user information: {ex.Message}";
+        }
+    }
+
+    private async Task RemoveUser()
+    {
+        try
+        {
+            var response = await Http.DeleteAsync($"https://userprovider-nikesjo.azurewebsites.net/api/DeleteUser/{userId}?code=gMCRU0qX0qhNOelgVY37TlfKzHXmmZF2SAyCt4aMOW7YAzFuYxlSLA%3D%3D");
+            if (response.IsSuccessStatusCode)
+            {
+                SuccessMessage = "User was deleted successfully";
+                NavigationManager.NavigateTo(ReturnUrl ?? "/users");
+            }
+            else
+            {
+                ErrorMessage = "Failed to delete user.";
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error delete user information: {ex.Message}";
+        }
+    }
+}

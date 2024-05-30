@@ -77,7 +77,7 @@ else
         {
             try
             {
-                subscriber = await Http.GetFromJsonAsync<Subscriber>($"http://localhost:7070/api/GetSubscriberById/{subscriberId}");
+                subscriber = await Http.GetFromJsonAsync<Subscriber>($"https://newsletterprovider-nikesjo.azurewebsites.net/api/GetSubscriberById/{subscriberId}?code=fLRrA4XPAPJPhG3JAul9ZsQJm6jpuxNRbfxHj7SdRz_4AzFu5DGETw%3D%3D");
                 if (subscriber != null)
                 {
                     formModel = subscriber;
@@ -92,7 +92,7 @@ else
 
     private async Task OnValidSubmitAsync()
     {
-        string url = $"http://localhost:7070/api/UpdateSubscriber/{subscriberId}";
+        string url = $"https://newsletterprovider-nikesjo.azurewebsites.net/api/UpdateSubscriber/{subscriberId}?code=rDo-TqtreVoGH5lgfYZomc0b2RJ5fnEPz3CRsjNIZDDHAzFu19E_Dw%3D%3D";
         var updateRequest = new { Email = formModel.Email };
         try
         {
@@ -132,7 +132,7 @@ else
 
     private async Task HandleSubmitAsync()
     {
-        string url = $"http://localhost:7070/api/Unsubscribe";
+        string url = $"https://newsletterprovider-nikesjo.azurewebsites.net/api/Unsubscribe?code=_SPjXJM8DsOwf_9Rb2WkeX5iCLWarC4FVpOAg0i35TNMAzFuXBNFtQ%3D%3D";
         var deleteRequest = new { Email = formModel.Email };
         try
         {

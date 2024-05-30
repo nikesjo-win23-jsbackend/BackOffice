@@ -1,63 +1,38 @@
 ﻿@page "/admins"
 
-@attribute [StreamRendering]
-@rendermode InteractiveServer
-
+@using BackOffice.Data
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@inject UserManager<ApplicationUser> UserManager
+@attribute [Authorize]
 
 <PageTitle>Admins</PageTitle>
 
 <h3>Admins</h3>
 
-@* @if (admins == null)
+@if (users == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    @foreach (var admin in admins)
+    @foreach (var user in users)
     {
-        <a href="/admins/@admin.Id">
-            <div class="mb-3">@admin.FirstName @admin.LastName</div>
+        <a href="/admindetails/@user.Id">
+            <div class="mb-3">
+                @user.Email
+                @user.FirstName
+                @user.LastName
+            </div>
         </a>
     }
 }
- *@
+
 @code {
-    // private ApplicationUser[]? admins = default!;
+    private List<ApplicationUser>? users;
 
-    // [CascadingParameter]
-    // private HttpContext HttpContext { get; set; } = default!;
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     try
-    //     {
-    //         await LoadUserDataAsync();
-
-    //         if (admins != null)
-    //         {
-    //             Input.FirstName = admins.FirstName;
-    //             Input.LastName = admins.LastName;
-    //             Input.Email = admins.Email!;
-
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Debug.WriteLine($"Error fetching user information in OnInitializedAsync: {ex.Message}");
-    //     }
-    // }
-
-    // private async Task LoadUserDataAsync()
-    // {
-    //     try
-    //     {
-    //         admins = await UserManager.Users[];
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Debug.WriteLine($"Error fetching user information: {ex.Message}");
-    //     }
-
-    // }
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserManager.Users.ToListAsync();
+    }
 }

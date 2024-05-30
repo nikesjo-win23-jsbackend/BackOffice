@@ -1,0 +1,480 @@
+﻿@page "/courses/{CourseId}"
+@using System.Text.Json
+
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+<h3>Update Course</h3>
+
+@if (!string.IsNullOrEmpty(SuccessMessage))
+{
+    <div id="form-success" class="alert alert-success" role="alert">
+        @SuccessMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div id="form-error" class="alert alert-danger" role="alert">
+        @ErrorMessage
+    </div>
+}
+
+@if (course != null)
+{
+    <EditForm Model="course" FormName="DeleteCourse" OnValidSubmit="RemoveValidSubmit">
+        <div class="mb-3">
+            <button type="submit" class="btn btn-danger">Delete Course</button>
+        </div>
+    </EditForm>
+
+    <EditForm Model="course" FormName="CourseForm" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <InputText id="title" class="form-control" @bind-Value="course!.Title" placeholder="Enter course Title" />
+            <ValidationMessage For="() => course!.Title" />
+        </div>
+
+        <div class="mb-3">
+            <label for="imageUri" class="form-label">Course Image small</label>
+            <InputText id="imageUri" class="form-control" @bind-Value="course.ImageUri" placeholder="Enter course image url" />
+            <ValidationMessage For="() => course!.ImageUri" />
+        </div>
+
+        <div class="mb-3">
+            <label for="imageHeaderUri" class="form-label">Course Image big</label>
+            <InputText id="imageHeaderUri" class="form-control" @bind-Value="course.ImageHeaderUri" placeholder="Enter course image url for course details" />
+            <ValidationMessage For="() => course!.ImageHeaderUri" />
+        </div>
+
+        <div class="mb-3">
+            <label for="isDigital" class="form-label">Is Digital</label>
+            <InputCheckbox id="isDigital" class="form-check-input" @bind-Value="course.IsDigital" />
+            <ValidationMessage For="() => course!.IsDigital" />
+        </div>
+
+        <div class="mb-3">
+            <label for="isBestseller" class="form-label">Is Best seller</label>
+            <InputCheckbox id="isBestseller" class="form-check-input" @bind-Value="course.IsBestseller" />
+            <ValidationMessage For="() => course!.IsBestseller" />
+        </div>
+
+        <div class="mb-3">
+            <label for="categories" class="form-label">Categories</label>
+            <InputText id="categories" class="form-control" @bind-Value="categoriesString" placeholder="Enter course categories with comma and no space between" />
+            <ValidationMessage For="() => categoriesString" />
+        </div>
+
+        <div class="mb-3">
+            <label for="ingress" class="form-label">Course Ingress</label>
+            <InputText id="ingress" class="form-control" @bind-Value="course.Ingress" placeholder="Enter course ingress" />
+            <ValidationMessage For="() => course!.Ingress" />
+        </div>
+
+        <div class="mb-3">
+            <label for="starRating" class="form-label">Star Rating</label>
+            <InputNumber id="starRating" class="form-control" @bind-Value="course.StarRating" placeholder="Enter star rating" />
+            <ValidationMessage For="() => course!.StarRating" />
+        </div>
+
+        <div class="mb-3">
+            <label for="reviews" class="form-label">Course Reviews</label>
+            <InputText id="reviews" class="form-control" @bind-Value="course.Reviews" placeholder="Enter reviews" />
+            <ValidationMessage For="() => course!.Reviews" />
+        </div>
+
+        <div class="mb-3">
+            <label for="likesInProcent" class="form-label">Course likes in procent</label>
+            <InputText id="likesInProcent" class="form-control" @bind-Value="course.LikesInProcent" placeholder="Enter course likes in procent" />
+            <ValidationMessage For="() => course!.LikesInProcent" />
+        </div>
+
+        <div class="mb-3">
+            <label for="likes" class="form-label">Course likes</label>
+            <InputText id="likes" class="form-control" @bind-Value="course.Likes" placeholder="Enter course likes" />
+            <ValidationMessage For="() => course!.Likes" />
+        </div>
+
+        <div class="mb-3">
+            <label for="hours" class="form-label">Course Hours</label>
+            <InputText id="hours" class="form-control" @bind-Value="course.Hours" placeholder="Enter course hours" />
+            <ValidationMessage For="() => course!.Hours" />
+        </div>
+
+        <div class="mb-3">
+            <label for="authorName" class="form-label">Author Name</label>
+            <input id="authorName" class="form-control" @bind="authorName" placeholder="Enter author name" />
+        </div>
+
+        <div class="mb-3">
+            <label for="currency" class="form-label">Course Currency</label>
+            <InputText id="currency" class="form-control" @bind-Value="course.Prices!.Currency" placeholder="Write the currency in symbols, such as $ or £" />
+            <ValidationMessage For="() => course!.Prices!.Currency" />
+        </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label">Course Price</label>
+            <InputNumber id="price" class="form-control" @bind-Value="course.Prices!.Price" placeholder="Enter course price" />
+            <ValidationMessage For="() => course!.Prices!.Price" />
+        </div>
+
+        <div class="mb-3">
+            <label for="discount" class="form-label">Course discount price</label>
+            <InputNumber id="discount" class="form-control" @bind-Value="course.Prices!.Discount" placeholder="Enter course discounted price" />
+            <ValidationMessage For="() => course!.Prices!.Discount" />
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Course Description</label>
+            <InputText id="description" class="form-control" @bind-Value="course.Content!.Description" placeholder="Enter course description" />
+            <ValidationMessage For="() => course!.Content!.Description" />
+        </div>
+
+        <div class="mb-3">
+            <label for="includes" class="form-label">Course Includes</label>
+            <InputText id="includes" class="form-control" @bind-Value="includesString" placeholder="Enter includes separated by commas with no space between" />
+        </div>
+
+        <div class="mb-3">
+            <label for="learn" class="form-label">Course Learn</label>
+            <InputText id="learn" class="form-control" @bind-Value="learnString" placeholder="Enter learn separated by commas with no space between" />
+        </div>
+
+        <div class="mb-3">
+            <label for="title_1" class="form-label">Program Detail Title 1</label>
+            <InputText id="title_1" class="form-control" @bind-Value="course.ProgramDetails!.Title_1" placeholder="Enter program detail title_1" />
+        </div>
+
+        <div class="mb-3">
+            <label for="description1" class="form-label">Program Detail Description 1</label>
+            <InputText id="description1" class="form-control" @bind-Value="course.ProgramDetails.Description_1" placeholder="Enter program detail description_1" />
+        </div>
+
+        <div class="mb-3">
+            <label for="title_2" class="form-label">Program Detail Title 2</label>
+            <InputText id="title_2" class="form-control" @bind-Value="course.ProgramDetails.Title_2" placeholder="Enter program detail title_2" />
+        </div>
+
+        <div class="mb-3">
+            <label for="description2" class="form-label">Program Detail Description 2</label>
+            <InputText id="description2" class="form-control" @bind-Value="course.ProgramDetails.Description_2" placeholder="Enter program detail description_2" />
+        </div>
+
+        <div class="mb-3">
+            <label for="title_3" class="form-label">Program Detail Title 3</label>
+            <InputText id="title_3" class="form-control" @bind-Value="course.ProgramDetails.Title_3" placeholder="Enter program detail title_3" />
+        </div>
+
+        <div class="mb-3">
+            <label for="description3" class="form-label">Program Detail Description 3</label>
+            <InputText id="description3" class="form-control" @bind-Value="course.ProgramDetails.Description_3" placeholder="Enter program detail description_3" />
+        </div>
+
+
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    private CourseCardModel? course;
+
+    private string? authorName;
+    private string? includesString;
+    private string? categoriesString;
+    private string? learnString;
+    private string[] categories = Array.Empty<string>();
+    private string[] includes = Array.Empty<string>();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+
+    private string? ErrorMessage { get; set; }
+
+    private string? SuccessMessage { get; set; }
+
+    [Parameter]
+    public string? CourseId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrEmpty(CourseId))
+        {
+            return;
+        }
+
+        var query = new GraphQLQuery
+            {
+                Query = @"
+        query ($id: String!) {
+            getCourseById(id: $id) {
+                id
+                title
+                imageUri
+                imageHeaderUri
+                isBestseller
+                isDigital
+                categories
+                ingress
+                starRating
+                reviews
+                likesInProcent
+                likes
+                hours
+                authors {
+                    name
+                }
+                prices {
+                    currency
+                    price
+                    discount
+                }
+                content {
+                    description
+                    includes
+                    learn
+                }
+                programDetails {
+                    title_1
+                    description_1
+                    title_2
+                    description_2
+                    title_3
+                    description_3
+                }
+            }
+        }",
+                Variables = new { id = CourseId }
+            };
+
+        var response = await Http.PostAsJsonAsync("https://courseprovider-nikesjo.azurewebsites.net/api/graphql?code=E2an0F4ye5fmD9IGxflSEEA2A3PQsf23TSD8CNFm1n2FAzFuR2IXJg%3D%3D", query);
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<DynamicGraphQLResponse>();
+            if (result?.Data.TryGetProperty("getCourseById", out var courseJson) == true)
+            {
+                course = new CourseCardModel
+                {
+                    Id = courseJson.GetProperty("id").GetString()!,
+                    Title = courseJson.GetProperty("title").GetString()!,
+                    ImageUri = courseJson.TryGetProperty("imageUri", out var imageUri) ? imageUri.GetString() : null,
+                    ImageHeaderUri = courseJson.TryGetProperty("imageHeaderUri", out var imageHeaderUri) ? imageHeaderUri.GetString() : null,
+                    IsBestseller = courseJson.GetProperty("isBestseller").GetBoolean(),
+                    IsDigital = courseJson.GetProperty("isDigital").GetBoolean(),
+                    Categories = courseJson.TryGetProperty("categories", out var categories) && categories.ValueKind != JsonValueKind.Null
+                        ? categories.EnumerateArray().Select(category => category.GetString()!).ToArray()
+                        : Array.Empty<string>(),
+                    Ingress = courseJson.TryGetProperty("ingress", out var ingress) ? ingress.GetString() : null,
+                    StarRating = courseJson.GetProperty("starRating").GetDecimal(),
+                    Reviews = courseJson.TryGetProperty("reviews", out var reviews) ? reviews.GetString() : null,
+                    LikesInProcent = courseJson.TryGetProperty("likesInProcent", out var likesInProcent) ? likesInProcent.GetString() : null,
+                    Likes = courseJson.TryGetProperty("likes", out var likes) ? likes.GetString() : null,
+                    Hours = courseJson.TryGetProperty("hours", out var hours) ? hours.GetString() : null,
+                    Authors = courseJson.TryGetProperty("authors", out var authors) && authors.ValueKind != JsonValueKind.Null
+                        ? authors.EnumerateArray().Select(author => new AuthorCardModel
+                        {
+                            Name = author.GetProperty("name").GetString()!
+                        }).ToList()
+                            : new List<AuthorCardModel>(),
+                    Prices = courseJson.TryGetProperty("prices", out var prices) && prices.ValueKind != JsonValueKind.Null
+                            ? new PricesCardModel
+                        {
+                            Currency = prices.GetProperty("currency").GetString(),
+                            Price = prices.GetProperty("price").GetDecimal(),
+                            Discount = prices.GetProperty("discount").GetDecimal()
+                        }
+                            : new PricesCardModel(),
+                    Content = courseJson.TryGetProperty("content", out var content) && content.ValueKind != JsonValueKind.Null
+                            ? new ContentCardModel
+                        {
+                            Description = content.GetProperty("description").GetString(),
+                            Includes = content.TryGetProperty("includes", out var includes) && includes.ValueKind != JsonValueKind.Null
+                            ? includes.EnumerateArray().Select(include => include.GetString()!).ToArray()
+                            : Array.Empty<string>(),
+                            Learn = content.TryGetProperty("learn", out var learn) && learn.ValueKind != JsonValueKind.Null
+                            ? learn.EnumerateArray().Select(learnItem => learnItem.GetString()!).ToArray()
+                            : Array.Empty<string>(),
+                        }
+                            : new ContentCardModel(),
+                    ProgramDetails = courseJson.TryGetProperty("programDetails", out var programDetails) && programDetails.ValueKind != JsonValueKind.Null
+                            ? new ProgramDetailItemCardModel
+                        {
+                            Title_1 = programDetails.GetProperty("title_1").GetString(),
+                            Description_1 = programDetails.GetProperty("description_1").GetString(),
+                            Title_2 = programDetails.GetProperty("title_2").GetString(),
+                            Description_2 = programDetails.GetProperty("description_2").GetString(),
+                            Title_3 = programDetails.GetProperty("title_3").GetString(),
+                            Description_3 = programDetails.GetProperty("description_3").GetString(),
+                        }
+                        : new ProgramDetailItemCardModel()
+                };
+
+                authorName = course.Authors.FirstOrDefault()?.Name;
+                categoriesString = string.Join(",", course?.Categories ?? Enumerable.Empty<string>());
+                includesString = string.Join(",", course?.Content?.Includes ?? Enumerable.Empty<string>());
+                learnString = string.Join(",", course?.Content?.Learn ?? Enumerable.Empty<string>());
+            }
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var updatedAuthors = new List<AuthorCardModel>
+            {
+                new AuthorCardModel{ Name = authorName }
+            };
+
+            var updatedCourse = new CourseCardModel
+            {
+                Id = course!.Id,
+                Title = course.Title,
+                ImageUri = course.ImageUri,
+                ImageHeaderUri = course.ImageHeaderUri,
+                IsBestseller = course.IsBestseller,
+                IsDigital = course.IsDigital,
+                Categories = categoriesString?.Split(',', StringSplitOptions.RemoveEmptyEntries),
+                Ingress = course.Ingress,
+                StarRating = course.StarRating,
+                Reviews = course.Reviews,
+                LikesInProcent = course.LikesInProcent,
+                Likes = course.Likes,
+                Hours = course.Hours,
+                Authors = updatedAuthors,
+                Prices = new PricesCardModel
+                {
+                    Currency = course.Prices?.Currency,
+                    Price = course.Prices!.Price,
+                    Discount = course.Prices.Discount
+                },
+                Content = new ContentCardModel
+                {
+                    Description = course.Content?.Description,
+                    Includes = includesString?.Split(',', StringSplitOptions.RemoveEmptyEntries),
+                    Learn = learnString?.Split(',', StringSplitOptions.RemoveEmptyEntries),
+                },
+                ProgramDetails = new ProgramDetailItemCardModel
+                {
+                    Title_1 = course.ProgramDetails?.Title_1,
+                    Description_1 = course.ProgramDetails?.Description_1,
+                    Title_2 = course.ProgramDetails?.Title_2,
+                    Description_2 = course.ProgramDetails?.Description_2,
+                    Title_3 = course.ProgramDetails?.Title_3,
+                    Description_3 = course.ProgramDetails?.Description_3,
+                }
+            };
+
+
+            var mutation = new GraphQLQuery
+            {
+                Query = @"
+                mutation UpdateCourse($input: CourseUpdateRequestInput!) {
+                    updateCourse(input: $input) {
+                        id
+                        title
+                        imageUri
+                        imageHeaderUri
+                        isBestseller
+                        isDigital
+                        categories
+                        ingress
+                        starRating
+                        reviews
+                        likesInProcent
+                        likes
+                        hours
+                        authors {
+                            name
+                        }
+                        prices {
+                            currency
+                            price
+                            discount
+                        }
+                        content {
+                            description
+                            includes
+                            learn
+                        }
+                        programDetails {
+                            title_1
+                            description_1
+                            title_2
+                            description_2
+                            title_3
+                            description_3
+                        }
+                    }
+                }",
+                Variables = new { input = updatedCourse }
+            };
+
+            var response = await Http.PostAsJsonAsync("https://courseprovider-nikesjo.azurewebsites.net/api/graphql?code=E2an0F4ye5fmD9IGxflSEEA2A3PQsf23TSD8CNFm1n2FAzFuR2IXJg%3D%3D", mutation);
+            if (response.IsSuccessStatusCode)
+            {
+                SuccessMessage = "Course updated successfully!";
+            }
+            else
+            {
+                ErrorMessage = "Failed to update course. Please try again.";
+                var errorContent = await response.Content.ReadAsStringAsync();
+                ErrorMessage += $" Server responded with: {errorContent}";
+                Debug.WriteLine("Update failed with response: " + errorContent);
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"An error occurred: {ex.Message}";
+            Debug.WriteLine("Exception: " + ex);
+        }
+    }
+
+    private async Task RemoveValidSubmit()
+    {
+        try
+        {
+            var deleteInput = new
+            {
+                id = course!.Id
+            };
+
+            var mutation = new GraphQLQuery
+                {
+                    Query = @"
+                mutation DeleteCourse($id: String!) {
+                    deleteCourse(id: $id)
+                }",
+                    Variables = deleteInput
+                };
+
+            var response = await Http.PostAsJsonAsync("https://courseprovider-nikesjo.azurewebsites.net/api/graphql?code=E2an0F4ye5fmD9IGxflSEEA2A3PQsf23TSD8CNFm1n2FAzFuR2IXJg%3D%3D", mutation);
+            if (response.IsSuccessStatusCode)
+            {
+                SuccessMessage = "Course deleted successfully!";
+                NavigationManager.NavigateTo(ReturnUrl ?? "/courses");
+            }
+            else
+            {
+                ErrorMessage = "Failed to delete course. Please try again.";
+                var errorContent = await response.Content.ReadAsStringAsync();
+                ErrorMessage += $" Server responded with: {errorContent}";
+                Debug.WriteLine("Deletion failed with response: " + errorContent);
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"An error occurred: {ex.Message}";
+            Debug.WriteLine("Exception: " + ex);
+        }
+    }
+}

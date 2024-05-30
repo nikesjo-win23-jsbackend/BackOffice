@@ -2,7 +2,7 @@
 
 public class CourseCardModel
 {
-    public string? Id { get; set; }
+    public string Id { get; set; } = null!;
     public string? ImageUri { get; set; }
     public string? ImageHeaderUri { get; set; }
     public bool IsBestseller { get; set; }
@@ -18,6 +18,7 @@ public class CourseCardModel
     public virtual List<AuthorCardModel>? Authors { get; set; }
     public virtual PricesCardModel? Prices { get; set; }
     public virtual ContentCardModel? Content { get; set; }
+    public virtual ProgramDetailItemCardModel? ProgramDetails { get; set; }
 }
 
 public class AuthorCardModel
@@ -30,7 +31,6 @@ public class ContentCardModel
     public string? Description { get; set; }
     public string[]? Includes { get; set; }
     public string[]? Learn { get; set; }
-    public virtual List<ProgramDetailItemCardModel>? ProgramDetails { get; set; }
 }
 
 public class PricesCardModel
@@ -42,7 +42,10 @@ public class PricesCardModel
 
 public class ProgramDetailItemCardModel
 {
-    public int Id { get; set; }
-    public string? Title { get; set; }
-    public string? Description { get; set; }
+    public string? Title_1 { get; set; }
+    public string? Description_1 { get; set; }
+    public string? Title_2 { get; set; }
+    public string? Description_2 { get; set; }
+    public string? Title_3 { get; set; }
+    public string? Description_3 { get; set; }
 }
