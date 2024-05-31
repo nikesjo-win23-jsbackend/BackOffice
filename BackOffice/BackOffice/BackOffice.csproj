@@ -13,6 +13,15 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="wwwroot\images\courses\course_1.svg" />
+    <None Include="wwwroot\images\courses\course_2.svg" />
+    <None Include="wwwroot\images\courses\course_3.svg" />
+    <None Include="wwwroot\images\courses\course_4.svg" />
+    <None Include="wwwroot\images\courses\course_5.svg" />
+    <None Include="wwwroot\images\courses\course_6.svg" />
+    <None Include="wwwroot\images\courses\course_7.svg" />
+    <None Include="wwwroot\images\courses\course_8.svg" />
+    <None Include="wwwroot\images\courses\course_9.svg" />
   </ItemGroup>
 
   <ItemGroup>

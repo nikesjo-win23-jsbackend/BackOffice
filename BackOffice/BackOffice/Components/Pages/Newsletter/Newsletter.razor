@@ -1,24 +1,34 @@
 ﻿@page "/newsletter"
 
 @attribute [StreamRendering]
+@attribute [Authorize]
 
 <PageTitle>Newsletter</PageTitle>
 
-<h3>Newsletter</h3>
+<section class="newsletters">
+    <div class="container">
+        <h1>Newsletter</h1>
 
-@if (subscribers == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    @foreach (var subscriber in subscribers)
-    {
-        <a href="/newsletter/@subscriber.Id">
-            <div class="mb-3">@subscriber.Email</div>
-        </a>
-    }
-}
+        @if (subscribers == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <div class="newsletter-cards">
+                @foreach (var subscriber in subscribers)
+                {
+                    <div class="newsletter-card">
+                        <div class="newsletter-email" onclick="location.href='/newsletter/@subscriber.Id'">
+                            @subscriber.Email
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
 
 @code {
     private Subscriber[]? subscribers;

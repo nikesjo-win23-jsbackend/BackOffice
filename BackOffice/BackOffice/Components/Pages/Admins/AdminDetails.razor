@@ -9,65 +9,62 @@
 @rendermode InteractiveServer
 @attribute [Authorize]
 
+<PageTitle>Admin details</PageTitle>
 
-@if (!string.IsNullOrEmpty(SuccessMessage))
-{
-    <div id="form-success" class="alert alert-success" role="alert">
-        @SuccessMessage
-    </div>
-}
-
-@if (!string.IsNullOrEmpty(ErrorMessage))
-{
-    <div id="form-error" class="alert alert-danger" role="alert">
-        @ErrorMessage
-    </div>
-}
-
-<EditForm Model="Input" FormName="DeleteUser" OnValidSubmit="RemoveAdmin">
-    <div class="mb-3">
-        <button type="submit" class="btn btn-danger">Delete User</button>
-    </div>
-</EditForm>
-<section id="signup">
+<section id="admin-details">
     <div class="container">
+        @if (!string.IsNullOrEmpty(SuccessMessage))
+        {
+            <div id="form-success" class="alert alert-success" role="alert">
+                @SuccessMessage
+            </div>
+        }
 
-        <EditForm method="post" Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" novalidate>
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div id="form-error" class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+        <EditForm method="post" Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" class="row g-4" novalidate>
             <DataAnnotationsValidator />
             <h3>Admin Details</h3>
-            <div class="content">
-                <div id="form-firstname" class="input-group">
-                    <label for="firstname" class="form-label">First name (Requierd)</label>
-                    <InputText type="text" @bind-Value="Input.FirstName" class="form-control" placeholder="Enter your first name." />
-                    <ValidationMessage For="() => Input.FirstName" />
-                </div>
+            <div class="col-xl-6">
+                <label for="firstname" class="form-label">First name (Required)</label>
+                <InputText type="text" @bind-Value="Input.FirstName" class="form-control" placeholder="Enter your first name." />
+                <ValidationMessage For="() => Input.FirstName" />
+            </div>
 
-                <div id="form-lastname" class="input-group">
-                    <label for="lastname" class="form-label">Last name (Requierd)</label>
-                    <InputText type="text" @bind-Value="Input.LastName" class="form-control" placeholder="Enter your last name." />
-                    <ValidationMessage For="() => Input.LastName" />
-                </div>
+            <div class="col-xl-6">
+                <label for="lastname" class="form-label">Last name (Required)</label>
+                <InputText type="text" @bind-Value="Input.LastName" class="form-control" placeholder="Enter your last name." />
+                <ValidationMessage For="() => Input.LastName" />
+            </div>
 
-                <div id="form-email" class="input-group">
-                    <label for="email" class="form-label">Email (Requierd)</label>
-                    <InputText type="text" @bind-Value="Input.Email" class="form-control" placeholder="Enter your email." />
-                    <ValidationMessage For="() => Input.Email" />
-                </div>
+            <div class="col-12">
+                <label for="email" class="form-label">Email (Required)</label>
+                <InputText type="text" @bind-Value="Input.Email" class="form-control" placeholder="Enter your email." />
+                <ValidationMessage For="() => Input.Email" />
+            </div>
 
-                <div id="form-password" class="input-group">
-                    <label>Password</label>
-                    <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="password" aria-required="true" placeholder="Enter your password" />
-                    <ValidationMessage For="() => Input.Password" />
-                </div>
-                <div id="form-confirm" class="input-group">
-                    <label>Confirm password</label>
-                    <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="confirm" aria-required="true" placeholder="Confirm your password" />
-                    <ValidationMessage For="() => Input.ConfirmPassword" />
-                </div>
+            <div class="col-xl-6">
+                <label>Password</label>
+                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="password" aria-required="true" placeholder="Enter your password" />
+                <ValidationMessage For="() => Input.Password" />
+            </div>
+            <div class="col-xl-6">
+                <label>Confirm password</label>
+                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="confirm" aria-required="true" placeholder="Confirm your password" />
+                <ValidationMessage For="() => Input.ConfirmPassword" />
+            </div>
 
-                <div id="form-buttons">
-                    <button class="btn-theme" type="submit">Save changes</button>
-                </div>
+            <div id="form-buttons">
+                <button class="btn-theme mt-3" type="submit">Save changes</button>
+            </div>
+        </EditForm>
+        <EditForm Model="Input" FormName="DeleteUser" OnValidSubmit="RemoveAdmin">
+            <div class="mt-5">
+                <button type="submit" class="btn btn-danger">Delete Admin</button>
             </div>
         </EditForm>
     </div>
@@ -79,8 +76,6 @@
     private string? ErrorMessage;
 
     private string? SuccessMessage;
-
-    private string? ReturnUrl;
 
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
@@ -151,7 +146,7 @@
                 {
                     SuccessMessage = "User was deleted successfully";
                     
-                    NavigationManager.NavigateTo(ReturnUrl ?? "/admins");
+                    NavigationManager.NavigateTo("/admins");
                 }
                 else
                 {

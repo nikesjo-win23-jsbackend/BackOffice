@@ -105,6 +105,7 @@ h1:focus {
   background-color: var(--color-theme);
   color: var(--color-white);
   border: none;
+  text-decoration: none;
 }
 .btn-theme:hover {
   text-decoration: none;
@@ -160,4 +161,236 @@ h1:focus {
 }
 .newsletter-info .newsletter-form .col-auto {
   margin-top: 10px;
+}
+
+.courses .container .header-courses {
+  display: flex;
+  justify-content: space-between;
+}
+.courses .container .header-courses .course-create-btn {
+  display: inline;
+  margin: 20px 20px;
+}
+.courses .container .courses-items {
+  display: grid;
+  grid-template-columns: auto;
+  gap: 25px;
+  justify-content: center;
+}
+@media (min-width: 768px) {
+  .courses .container .courses-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+  }
+}
+@media (min-width: 1200px) {
+  .courses .container .courses-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 30px;
+  }
+}
+.courses .container .courses-items .course {
+  box-shadow: 0px 2px 6.4px -1px rgba(19, 16, 34, 0.03), 0px 4.4px 12px -1px rgba(19, 16, 34, 0.06);
+  position: relative;
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease-in-out;
+  max-width: 416px;
+  height: 473px;
+}
+.courses .container .courses-items .course:hover {
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(160, 160, 160, 0.5);
+}
+.courses .container .courses-items .course .best-seller {
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  padding: 0px 8px;
+  background-color: var(--color-success);
+  color: var(--color-white);
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+.courses .container .courses-items .course img {
+  min-width: 100%;
+  height: auto;
+}
+.courses .container .courses-items .course .content {
+  text-align: left;
+  padding: 10px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 220px;
+}
+.courses .container .courses-items .course .content h5 {
+  font-size: 16px;
+  color: var(--color-gray-800);
+  font-weight: 800;
+}
+@media (min-width: 1200px) {
+  .courses .container .courses-items .course .content h5 {
+    font-size: 20px;
+    color: var(--color-gray-800);
+  }
+}
+.courses .container .courses-items .course .content .author {
+  font-size: 14px;
+  color: var(--color-gray-700);
+}
+.courses .container .courses-items .course .content .pricing {
+  display: flex;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  padding-bottom: 15px;
+  margin-top: auto;
+}
+.courses .container .courses-items .course .content .pricing .discount {
+  color: var(--color-danger);
+}
+.courses .container .courses-items .course .content .pricing .original {
+  color: var(--color-theme);
+}
+.courses .container .courses-items .course .content .pricing .discount-enabled {
+  color: var(--color-gray-600);
+  font-weight: 400;
+  font-size: 16px;
+  text-decoration: line-through;
+}
+.courses .container .courses-items .course .content .footer {
+  display: flex;
+  margin-top: auto;
+  gap: 20px;
+  color: var(--color-gray-600);
+  padding-top: 20px;
+  border-top: 1px solid var(--color-gray-300);
+}
+.courses .container .courses-items .course .content .footer i {
+  padding-right: 5px;
+}
+
+.pagination {
+  display: flex;
+  gap: 8px;
+  margin: 30px 0;
+  align-items: center;
+  justify-content: center;
+}
+.pagination i {
+  font-size: 14px;
+  padding: 0 10px;
+}
+.pagination .number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-900);
+  font-size: 0.9rem;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  width: 38px;
+  height: 38px;
+}
+.pagination .number:hover {
+  color: var(--color-gray-800);
+  background-color: var(--color-gray-200);
+}
+.pagination .active {
+  color: var(--color-white);
+  background-color: var(--color-theme);
+}
+
+.admins .header-admins {
+  display: flex;
+  justify-content: space-between;
+}
+.admins .header-admins .course-create-btn {
+  display: inline;
+  margin: 20px 20px;
+}
+.admins .admin-cards {
+  display: flex;
+  gap: 25px;
+}
+.admins .admin-cards .admin-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 6.4px -1px rgba(19, 16, 34, 0.03), 0px 4.4px 12px -1px rgba(19, 16, 34, 0.06);
+  position: relative;
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease-in-out;
+  width: auto;
+  min-height: 60px;
+  padding: 10px;
+}
+.admins .admin-cards .admin-card:hover {
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(160, 160, 160, 0.5);
+}
+.admins .admin-cards .admin-card .admin-name {
+  font-weight: 600;
+}
+
+.newsletters .container .newsletter-cards {
+  display: flex;
+  gap: 25px;
+  margin-top: 20px;
+}
+.newsletters .container .newsletter-cards .newsletter-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 6.4px -1px rgba(19, 16, 34, 0.03), 0px 4.4px 12px -1px rgba(19, 16, 34, 0.06);
+  position: relative;
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease-in-out;
+  width: 250px;
+  height: 60px;
+  padding: 10px;
+}
+.newsletters .container .newsletter-cards .newsletter-card:hover {
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(160, 160, 160, 0.5);
+}
+.newsletters .container .newsletter-cards .newsletter-card .newsletter-email {
+  font-weight: 600;
+}
+
+.users .container .user-cards {
+  display: flex;
+  gap: 25px;
+  margin-top: 20px;
+}
+.users .container .user-cards .user-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 6.4px -1px rgba(19, 16, 34, 0.03), 0px 4.4px 12px -1px rgba(19, 16, 34, 0.06);
+  position: relative;
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease-in-out;
+  width: 250px;
+  height: 60px;
+  padding: 10px;
+}
+.users .container .user-cards .user-card:hover {
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(160, 160, 160, 0.5);
+}
+.users .container .user-cards .user-card .user-fullname {
+  font-weight: 600;
 }

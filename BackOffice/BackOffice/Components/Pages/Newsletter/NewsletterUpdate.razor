@@ -1,59 +1,62 @@
 ﻿@page "/newsletter/{subscriberId}"
 
 @attribute [StreamRendering]
+@attribute [Authorize]
 @rendermode InteractiveServer
 
 <PageTitle>Update Newsletter</PageTitle>
 
-<h3>Update Newsletter</h3>
+<section class="container">
+    <h3>Update Newsletter</h3>
 
-@if (subscriber == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <div class="newsletter-info">
-        @if (!string.IsNullOrEmpty(SuccessMessage))
-        {
-            <div id="form-success" class="alert alert-success" role="alert">
-                @SuccessMessage
-            </div>
-        }
+    @if (subscriber == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <div class="newsletter-info">
+            @if (!string.IsNullOrEmpty(SuccessMessage))
+            {
+                <div id="form-success" class="alert alert-success" role="alert">
+                    @SuccessMessage
+                </div>
+            }
 
-        @if (!string.IsNullOrEmpty(ErrorMessage))
-        {
-            <div id="form-error" class="alert alert-danger" role="alert">
-                @ErrorMessage
-            </div>
-        }
-        <EditForm method="post" Model="formModel" FormName="newsletterForm" OnValidSubmit="OnValidSubmitAsync" class="newsletter-form" novalidate>
-            <DataAnnotationsValidator />
-            <div class="col g-4">
-                <div class="col-xl-6">
-                    <label class="form-label">Email</label>
-                    <input type="text" @bind="formModel.Email" class="form-control" />
+            @if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <div id="form-error" class="alert alert-danger" role="alert">
+                    @ErrorMessage
                 </div>
-                <div class="col-auto">
-                    <button class="btn-theme" type="submit">Save changes</button>
+            }
+            <EditForm method="post" Model="formModel" FormName="newsletterForm" OnValidSubmit="OnValidSubmitAsync" class="newsletter-form" novalidate>
+                <DataAnnotationsValidator />
+                <div class="col g-4">
+                    <div class="col-xl-6">
+                        <label class="form-label">Email</label>
+                        <input type="text" @bind="formModel.Email" class="form-control" />
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn-theme" type="submit">Save changes</button>
+                    </div>
                 </div>
-            </div>
-        </EditForm>
+            </EditForm>
 
-        <EditForm method="post" Model="deleteSubscriber" FormName="deleteSubscriber" OnValidSubmit="HandleSubmitAsync" class="delete-subscriber" novalidate>
-            <DataAnnotationsValidator />
-            <div class="col g-4">
-                <div class="delete-checkbox">
-                    <InputCheckbox @bind-Value="deleteSubscriber.ConfirmDelete" class="form-check-input" aria-required="true" />
-                    <label class="form-label">Delete subscriber from database</label>
+            <EditForm method="post" Model="deleteSubscriber" FormName="deleteSubscriber" OnValidSubmit="HandleSubmitAsync" class="delete-subscriber" novalidate>
+                <DataAnnotationsValidator />
+                <div class="col g-4">
+                    <div class="delete-checkbox">
+                        <InputCheckbox @bind-Value="deleteSubscriber.ConfirmDelete" class="form-check-input" aria-required="true" />
+                        <label class="form-label">Delete subscriber from database</label>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn-red" type="submit">Delete subscriber</button>
+                    </div>
                 </div>
-                <div class="col-auto">
-                    <button class="btn-red" type="submit">Delete subscriber</button>
-                </div>
-            </div>
-        </EditForm>
-    </div>
-}
+            </EditForm>
+        </div>
+    }
+</section>
 
 @code {
     private Subscriber? subscriber = new Subscriber();

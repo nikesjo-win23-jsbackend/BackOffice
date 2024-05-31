@@ -7,74 +7,50 @@
 
 <section class="courses">
     <div class="container">
-        <div class="action-buttons">
-            <i class="fa-solid fa-house"></i>
-            <a href="/">Home</a>
-            <i class="fa-solid fa-angles-right"></i>
-            <a href="/courses">Courses</a>
-        </div>
         <div class="header-courses">
-            <div class="header-left">
-                <h1>Courses</h1>
-            </div>
-            <div class="header-right">
-                <form>
-                    <div class="select">
-                        <div class="selected">All Categories<i class="arrow-down fas fa-chevron-down"></i></div>
-                        <div class="select-options">
-                            <div class="option" data-value="all">All Categories</div>
-                            <div class="option" data-value="all">HTML</div>
-                        </div>
-                    </div>
-
-                    <div class="input-search-group">
-                        <input id="searchQuery" name="searchQuery" placeholder="Search Courses" />
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-
-                </form>
-            </div>
+            <h1>Courses</h1>
+            <NavLink class="btn-theme course-create-btn" href="/create-course">Create new course</NavLink>
         </div>
-        <div class="courses-square">
+        
+        <div class="courses-items">
             @if (courses != null)
             {
                 foreach (var course in courses)
                 {
-                    <div class="grid-item">
+                    <div class="course">
                         @if (course.IsBestseller)
                         {
-                            <div class="text-top">Best Seller</div>
+                            <div class="best-seller">Best Seller</div>
                         }
-                        <a class="button-top" data-courseid="@course.Id" data-bs-toggle="tooltip" data-bs-title="Save Course"><i class="fa-regular fa-bookmark"></i></a>
-                        <img src="@course.ImageUri" alt="Image of @course.Title">
-                        <a onclick="location.href='/courses/@course.Id'">
-                            <div class="text-info">
-                                <h5>@course.Title</h5>
-                                <p class="creator">By @string.Join(", ", course.Authors!.Select(a => a.Name))</p>
-                                @if (course.Prices != null)
-                                {
+                        <img src="images/courses/@course.ImageUri" alt="Image of @course.Title">
+                        <div class="content" onclick="location.href='/courses/@course.Id'">
+                            <h5>@course.Title</h5>
+                            <p class="author">By @string.Join(", ", course.Authors!.Select(a => a.Name))</p>
+                            @if (course.Prices != null)
+                            {
+                                <div class="pricing">
                                     @if (course.Prices.Discount > 0)
                                     {
-                                        <p class="price discount">
+                                        <p class="discount">
                                             @course.Prices.Currency @course.Prices.Discount
-                                            <del>@course.Prices.Currency @course.Prices.Price</del>
+                                            <span class="discount-enabled">@course.Prices.Currency @course.Prices.Price</span>
                                         </p>
                                     }
                                     else
                                     {
-                                        <p class="price">@course.Prices.Currency @course.Prices.Price</p>
+                                        <p class="original">@course.Prices.Currency @course.Prices.Price</p>
                                     }
-                                }
-                                <div class="clock">
-                                    <i class="fa-regular fa-clock"></i>
-                                    <p>@course.Hours hours</p>
-                                    <div class="thumbs-up">
-                                        <i class="fa-regular fa-thumbs-up"></i>
-                                        <p>@course.LikesInProcent% (@course.Likes)</p>
-                                    </div>
+                                </div>
+                            }
+                            <div class="footer">
+                                <div class="hours">
+                                    <i class="fa-regular fa-clock"></i>@course.Hours hours
+                                </div>
+                                <div class="likes">
+                                    <i class="fa-regular fa-thumbs-up"></i>@course.LikesInProcent (@course.Likes)
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
                 }
             }
@@ -84,9 +60,11 @@
             }
         </div>
         <div class="pagination">
-            <a class="number" href="/courses">1</a>
-            <a class="number active" href="/courses">2</a>
+            <i class="fa-solid fa-less-than"></i>
+            <a class="number active" href="/courses">1</a>
+            <a class="number" href="/courses">2</a>
             <a class="number" href="/courses">3</a>
+            <i class="fa-solid fa-greater-than"></i>
         </div>
     </div>
 </section>

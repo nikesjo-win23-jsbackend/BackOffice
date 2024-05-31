@@ -6,183 +6,187 @@
 @inject NavigationManager NavigationManager
 @attribute [Authorize]
 
-<h3>Update Course</h3>
+<PageTitle>Update course</PageTitle>
 
-@if (!string.IsNullOrEmpty(SuccessMessage))
-{
-    <div id="form-success" class="alert alert-success" role="alert">
-        @SuccessMessage
+<section class="update-course">
+    <div class="container">
+        <h1>Update course</h1>
+        @if (!string.IsNullOrEmpty(SuccessMessage))
+        {
+            <div id="form-success" class="alert alert-success" role="alert">
+                @SuccessMessage
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div id="form-error" class="alert alert-danger" role="alert">
+                @ErrorMessage
+            </div>
+        }
+        @if (course != null)
+        {
+            <EditForm Model="course" FormName="CourseForm" OnValidSubmit="HandleValidSubmit" class="row g-4" novalidate>
+                <DataAnnotationsValidator />
+
+                <div class="col-12">
+                    <label for="title" class="form-label">Title</label>
+                    <InputText id="title" class="form-control" @bind-Value="course!.Title" placeholder="Enter course Title" />
+                    <ValidationMessage For="() => course!.Title" />
+                </div>
+
+                <div class="col-xl-3">
+                    <label for="imageUri" class="form-label">Course Image small</label>
+                    <InputText id="imageUri" class="form-control" @bind-Value="course.ImageUri" placeholder="Enter course image url" />
+                    <ValidationMessage For="() => course!.ImageUri" />
+                </div>
+
+                <div class="col-xl-3">
+                    <label for="imageHeaderUri" class="form-label">Course Image big</label>
+                    <InputText id="imageHeaderUri" class="form-control" @bind-Value="course.ImageHeaderUri" placeholder="Enter course image url for course details" />
+                    <ValidationMessage For="() => course!.ImageHeaderUri" />
+                </div>
+
+                <div class="col-xl-3">
+                    <label for="isDigital" class="form-label">Is Digital</label>
+                    <InputCheckbox id="isDigital" class="form-check-input" @bind-Value="course.IsDigital" />
+                    <ValidationMessage For="() => course!.IsDigital" />
+                </div>
+
+                <div class="col-xl-3">
+                    <label for="isBestseller" class="form-label">Is Bestseller</label>
+                    <InputCheckbox id="isBestseller" class="form-check-input" @bind-Value="course.IsBestseller" />
+                    <ValidationMessage For="() => course!.IsBestseller" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="categories" class="form-label">Categories</label>
+                    <InputText id="categories" class="form-control" @bind-Value="categoriesString" placeholder="Enter course categories with comma and no space between" />
+                    <ValidationMessage For="() => categoriesString" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="ingress" class="form-label">Ingress</label>
+                    <InputTextArea id="ingress" class="form-control" @bind-Value="course.Ingress" placeholder="Enter course ingress" />
+                    <ValidationMessage For="() => course!.Ingress" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="authorName" class="form-label">Author Name</label>
+                    <input id="authorName" class="form-control" @bind="authorName" placeholder="Enter author name" />
+                </div>
+
+                <div class="col-xl-2">
+                    <label for="currency" class="form-label">Currency</label>
+                    <InputText id="currency" class="form-control" @bind-Value="course.Prices!.Currency" placeholder="Write the currency in symbols, such as $ or £" />
+                    <ValidationMessage For="() => course!.Prices!.Currency" />
+                </div>
+
+                <div class="col-xl-2">
+                    <label for="price" class="form-label">Price</label>
+                    <InputNumber id="price" class="form-control" @bind-Value="course.Prices!.Price" placeholder="Enter course price" />
+                    <ValidationMessage For="() => course!.Prices!.Price" />
+                </div>
+
+                <div class="col-xl-2">
+                    <label for="discount" class="form-label">Discount price</label>
+                    <InputNumber id="discount" class="form-control" @bind-Value="course.Prices!.Discount" placeholder="Enter course discounted price" />
+                    <ValidationMessage For="() => course!.Prices!.Discount" />
+                </div>
+
+                <div class="col-xl-2">
+                    <label for="starRating" class="form-label">Star Rating</label>
+                    <InputNumber id="starRating" class="form-control" @bind-Value="course.StarRating" placeholder="Enter star rating" />
+                    <ValidationMessage For="() => course!.StarRating" />
+                </div>
+
+                <div class="col-xl-2">
+                    <label for="reviews" class="form-label">Reviews</label>
+                    <InputText id="reviews" class="form-control" @bind-Value="course.Reviews" placeholder="Enter reviews" />
+                    <ValidationMessage For="() => course!.Reviews" />
+                </div>
+
+                <div class="col-xl-2">
+                    <label for="likes" class="form-label">Likes</label>
+                    <InputText id="likes" class="form-control" @bind-Value="course.Likes" placeholder="Enter course likes" />
+                    <ValidationMessage For="() => course!.Likes" />
+                </div>
+
+                <div class="col-xl-2">
+                    <label for="likesInProcent" class="form-label">Likes in procent</label>
+                    <InputText id="likesInProcent" class="form-control" @bind-Value="course.LikesInProcent" placeholder="Enter course likes in procent" />
+                    <ValidationMessage For="() => course!.LikesInProcent" />
+                </div>
+
+                <div class="col-xl-2">
+                    <label for="hours" class="form-label">Course Hours</label>
+                    <InputText id="hours" class="form-control" @bind-Value="course.Hours" placeholder="Enter course hours" />
+                    <ValidationMessage For="() => course!.Hours" />
+                </div>
+
+                <div class="col-12">
+                    <label for="description" class="form-label">Course Description</label>
+                    <InputTextArea id="description" class="form-control" @bind-Value="course.Content!.Description" placeholder="Enter course description" />
+                    <ValidationMessage For="() => course!.Content!.Description" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="includes" class="form-label">Includes</label>
+                    <InputTextArea id="includes" class="form-control" @bind-Value="includesString" placeholder="Enter includes separated by commas with no space between" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="learn" class="form-label">Learn</label>
+                    <InputTextArea id="learn" class="form-control" @bind-Value="learnString" placeholder="Enter learn separated by commas with no space between" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="title_1" class="form-label">Program Detail Title 1</label>
+                    <InputText id="title_1" class="form-control" @bind-Value="course.ProgramDetails!.Title_1" placeholder="Enter program detail title_1" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="description1" class="form-label">Program Detail Description 1</label>
+                    <InputTextArea id="description1" class="form-control" @bind-Value="course.ProgramDetails.Description_1" placeholder="Enter program detail description_1" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="title_2" class="form-label">Program Detail Title 2</label>
+                    <InputText id="title_2" class="form-control" @bind-Value="course.ProgramDetails.Title_2" placeholder="Enter program detail title_2" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="description2" class="form-label">Program Detail Description 2</label>
+                    <InputTextArea id="description2" class="form-control" @bind-Value="course.ProgramDetails.Description_2" placeholder="Enter program detail description_2" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="title_3" class="form-label">Program Detail Title 3</label>
+                    <InputText id="title_3" class="form-control" @bind-Value="course.ProgramDetails.Title_3" placeholder="Enter program detail title_3" />
+                </div>
+
+                <div class="col-xl-6">
+                    <label for="description3" class="form-label">Program Detail Description 3</label>
+                    <InputTextArea id="description3" class="form-control" @bind-Value="course.ProgramDetails.Description_3" placeholder="Enter program detail description_3" />
+                </div>
+
+                <div id="form-buttons">
+                    <button class="btn-theme mt-3" type="submit">Save changes</button>
+                </div>
+            </EditForm>
+            <EditForm Model="course" FormName="DeleteCourse" OnValidSubmit="RemoveValidSubmit">
+                <div class="mt-3 mb-5">
+                    <button type="submit" class="btn btn-danger">Delete Course</button>
+                </div>
+            </EditForm>
+        }
+        else
+        {
+            <p>Loading...</p>
+        }
     </div>
-}
+</section>
 
-@if (!string.IsNullOrEmpty(ErrorMessage))
-{
-    <div id="form-error" class="alert alert-danger" role="alert">
-        @ErrorMessage
-    </div>
-}
-
-@if (course != null)
-{
-    <EditForm Model="course" FormName="DeleteCourse" OnValidSubmit="RemoveValidSubmit">
-        <div class="mb-3">
-            <button type="submit" class="btn btn-danger">Delete Course</button>
-        </div>
-    </EditForm>
-
-    <EditForm Model="course" FormName="CourseForm" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-
-        <div class="mb-3">
-            <label for="title" class="form-label">Title</label>
-            <InputText id="title" class="form-control" @bind-Value="course!.Title" placeholder="Enter course Title" />
-            <ValidationMessage For="() => course!.Title" />
-        </div>
-
-        <div class="mb-3">
-            <label for="imageUri" class="form-label">Course Image small</label>
-            <InputText id="imageUri" class="form-control" @bind-Value="course.ImageUri" placeholder="Enter course image url" />
-            <ValidationMessage For="() => course!.ImageUri" />
-        </div>
-
-        <div class="mb-3">
-            <label for="imageHeaderUri" class="form-label">Course Image big</label>
-            <InputText id="imageHeaderUri" class="form-control" @bind-Value="course.ImageHeaderUri" placeholder="Enter course image url for course details" />
-            <ValidationMessage For="() => course!.ImageHeaderUri" />
-        </div>
-
-        <div class="mb-3">
-            <label for="isDigital" class="form-label">Is Digital</label>
-            <InputCheckbox id="isDigital" class="form-check-input" @bind-Value="course.IsDigital" />
-            <ValidationMessage For="() => course!.IsDigital" />
-        </div>
-
-        <div class="mb-3">
-            <label for="isBestseller" class="form-label">Is Best seller</label>
-            <InputCheckbox id="isBestseller" class="form-check-input" @bind-Value="course.IsBestseller" />
-            <ValidationMessage For="() => course!.IsBestseller" />
-        </div>
-
-        <div class="mb-3">
-            <label for="categories" class="form-label">Categories</label>
-            <InputText id="categories" class="form-control" @bind-Value="categoriesString" placeholder="Enter course categories with comma and no space between" />
-            <ValidationMessage For="() => categoriesString" />
-        </div>
-
-        <div class="mb-3">
-            <label for="ingress" class="form-label">Course Ingress</label>
-            <InputText id="ingress" class="form-control" @bind-Value="course.Ingress" placeholder="Enter course ingress" />
-            <ValidationMessage For="() => course!.Ingress" />
-        </div>
-
-        <div class="mb-3">
-            <label for="starRating" class="form-label">Star Rating</label>
-            <InputNumber id="starRating" class="form-control" @bind-Value="course.StarRating" placeholder="Enter star rating" />
-            <ValidationMessage For="() => course!.StarRating" />
-        </div>
-
-        <div class="mb-3">
-            <label for="reviews" class="form-label">Course Reviews</label>
-            <InputText id="reviews" class="form-control" @bind-Value="course.Reviews" placeholder="Enter reviews" />
-            <ValidationMessage For="() => course!.Reviews" />
-        </div>
-
-        <div class="mb-3">
-            <label for="likesInProcent" class="form-label">Course likes in procent</label>
-            <InputText id="likesInProcent" class="form-control" @bind-Value="course.LikesInProcent" placeholder="Enter course likes in procent" />
-            <ValidationMessage For="() => course!.LikesInProcent" />
-        </div>
-
-        <div class="mb-3">
-            <label for="likes" class="form-label">Course likes</label>
-            <InputText id="likes" class="form-control" @bind-Value="course.Likes" placeholder="Enter course likes" />
-            <ValidationMessage For="() => course!.Likes" />
-        </div>
-
-        <div class="mb-3">
-            <label for="hours" class="form-label">Course Hours</label>
-            <InputText id="hours" class="form-control" @bind-Value="course.Hours" placeholder="Enter course hours" />
-            <ValidationMessage For="() => course!.Hours" />
-        </div>
-
-        <div class="mb-3">
-            <label for="authorName" class="form-label">Author Name</label>
-            <input id="authorName" class="form-control" @bind="authorName" placeholder="Enter author name" />
-        </div>
-
-        <div class="mb-3">
-            <label for="currency" class="form-label">Course Currency</label>
-            <InputText id="currency" class="form-control" @bind-Value="course.Prices!.Currency" placeholder="Write the currency in symbols, such as $ or £" />
-            <ValidationMessage For="() => course!.Prices!.Currency" />
-        </div>
-
-        <div class="mb-3">
-            <label for="price" class="form-label">Course Price</label>
-            <InputNumber id="price" class="form-control" @bind-Value="course.Prices!.Price" placeholder="Enter course price" />
-            <ValidationMessage For="() => course!.Prices!.Price" />
-        </div>
-
-        <div class="mb-3">
-            <label for="discount" class="form-label">Course discount price</label>
-            <InputNumber id="discount" class="form-control" @bind-Value="course.Prices!.Discount" placeholder="Enter course discounted price" />
-            <ValidationMessage For="() => course!.Prices!.Discount" />
-        </div>
-
-        <div class="mb-3">
-            <label for="description" class="form-label">Course Description</label>
-            <InputText id="description" class="form-control" @bind-Value="course.Content!.Description" placeholder="Enter course description" />
-            <ValidationMessage For="() => course!.Content!.Description" />
-        </div>
-
-        <div class="mb-3">
-            <label for="includes" class="form-label">Course Includes</label>
-            <InputText id="includes" class="form-control" @bind-Value="includesString" placeholder="Enter includes separated by commas with no space between" />
-        </div>
-
-        <div class="mb-3">
-            <label for="learn" class="form-label">Course Learn</label>
-            <InputText id="learn" class="form-control" @bind-Value="learnString" placeholder="Enter learn separated by commas with no space between" />
-        </div>
-
-        <div class="mb-3">
-            <label for="title_1" class="form-label">Program Detail Title 1</label>
-            <InputText id="title_1" class="form-control" @bind-Value="course.ProgramDetails!.Title_1" placeholder="Enter program detail title_1" />
-        </div>
-
-        <div class="mb-3">
-            <label for="description1" class="form-label">Program Detail Description 1</label>
-            <InputText id="description1" class="form-control" @bind-Value="course.ProgramDetails.Description_1" placeholder="Enter program detail description_1" />
-        </div>
-
-        <div class="mb-3">
-            <label for="title_2" class="form-label">Program Detail Title 2</label>
-            <InputText id="title_2" class="form-control" @bind-Value="course.ProgramDetails.Title_2" placeholder="Enter program detail title_2" />
-        </div>
-
-        <div class="mb-3">
-            <label for="description2" class="form-label">Program Detail Description 2</label>
-            <InputText id="description2" class="form-control" @bind-Value="course.ProgramDetails.Description_2" placeholder="Enter program detail description_2" />
-        </div>
-
-        <div class="mb-3">
-            <label for="title_3" class="form-label">Program Detail Title 3</label>
-            <InputText id="title_3" class="form-control" @bind-Value="course.ProgramDetails.Title_3" placeholder="Enter program detail title_3" />
-        </div>
-
-        <div class="mb-3">
-            <label for="description3" class="form-label">Program Detail Description 3</label>
-            <InputText id="description3" class="form-control" @bind-Value="course.ProgramDetails.Description_3" placeholder="Enter program detail description_3" />
-        </div>
-
-
-
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </EditForm>
-}
-else
-{
-    <p>Loading...</p>
-}
 
 @code {
     private CourseCardModel? course;

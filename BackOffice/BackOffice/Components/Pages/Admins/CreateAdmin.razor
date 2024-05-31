@@ -6,24 +6,40 @@
 
 <PageTitle>Create Admin</PageTitle>
 
-<h3>Create Admin</h3>
+<section class="container">
+    <h1>Create Admin</h1>
 
-<EditForm Model="@newAdmin" OnValidSubmit="HandleValidSubmit">
-    <InputText @bind-Value="newAdmin.FirstName" placeholder="First name" />
-    <InputText @bind-Value="newAdmin.LastName" placeholder="Last name" />
-    <InputText @bind-Value="newAdmin.Email" placeholder="Email" />
-    <InputText @bind-Value="newAdmin.Password" type="password" placeholder="Password" />
-    <ValidationMessage For="@(() => newAdmin.FirstName)" />
-    <ValidationMessage For="@(() => newAdmin.LastName)" />
-    <ValidationMessage For="@(() => newAdmin.Email)" />
-    <ValidationMessage For="@(() => newAdmin.Password)" />
-    <button type="submit">Create Admin</button>
-</EditForm>
+    <EditForm Model="@newAdmin" OnValidSubmit="HandleValidSubmit" class="row g-4" novalidate>
+        <div class="col-xl-6">
+            <label class="form-label">First name</label>
+            <InputText class="form-control" @bind-Value="newAdmin.FirstName" placeholder="First name" />
+            <ValidationMessage For="() => newAdmin.FirstName" />
+        </div>
+        <div class="col-xl-6">
+            <label class="form-label">Last name</label>
+            <InputText class="form-control" @bind-Value="newAdmin.LastName" placeholder="Last name" />
+            <ValidationMessage For="@(() => newAdmin.LastName)" />
+        </div>
+        <div class="col-xl-6">
+            <label class="form-label">Email</label>
+            <InputText class="form-control" @bind-Value="newAdmin.Email" placeholder="Email" />
+            <ValidationMessage For="@(() => newAdmin.Email)" />
+        </div>
+        <div class="col-xl-6">
+            <label class="form-label">Password</label>
+            <InputText class="form-control" @bind-Value="newAdmin.Password" placeholder="Password" />
+            <ValidationMessage For="@(() => newAdmin.Password)" />
+        </div>
+        <div id="form-buttons">
+            <button class="btn-theme mt-3 mb-4" type="submit">Create admin</button>
+        </div>
+    </EditForm>
 
-@if (resultMessage != null)
-{
-    <p>@resultMessage</p>
-}
+    @if (resultMessage != null)
+    {
+        <p>@resultMessage</p>
+    }
+</section>
 
 @code {
     private AdminUserModel newAdmin = new AdminUserModel();

@@ -8,25 +8,30 @@
 
 <PageTitle>Admins</PageTitle>
 
-<h3>Admins</h3>
-
-@if (users == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    @foreach (var user in users)
+<section class="admins container">
+    <div class="header-admins">
+        <h1>Admins</h1>
+        <NavLink class="btn-theme course-create-btn" href="/create-admin">Create new admin</NavLink>
+    </div>
+    @if (users == null)
     {
-        <a href="/admindetails/@user.Id">
-            <div class="mb-3">
-                @user.Email
-                @user.FirstName
-                @user.LastName
-            </div>
-        </a>
+        <p><em>Loading...</em></p>
     }
-}
+    else
+    {
+        <div class="admin-cards">
+            @foreach (var user in users)
+            {
+                <div class="admin-card" onclick="location.href='/admindetails/@user.Id'">
+                    <div class="admin-name">
+                        @user.FirstName
+                        @user.LastName
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>
 
 @code {
     private List<ApplicationUser>? users;
